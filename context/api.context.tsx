@@ -5,22 +5,43 @@ import {
   useEffect,
   useState,
 } from "react";
+import { Account } from "@/types/types";
 
 interface ApiProviderProps {
   children: ReactNode;
 }
 
-export const ApiContext = createContext({
+export type ApiContextType = {
   state: {
-    codes: [],
-    benefits: [],
+    codes: {
+      accounts: [] | Account[];
+    };
+    benefits: {
+      accounts: [] | Account[];
+    };
+  };
+  hooks: {};
+};
+
+export const ApiContext = createContext<ApiContextType>({
+  state: {
+    codes: {
+      accounts: [],
+    },
+    benefits: {
+      accounts: [],
+    },
   },
   hooks: {},
 });
 
 function ApiProvider({ children }: ApiProviderProps) {
-  const [codes, setCodes] = useState([]);
-  const [benefits, setBenefits] = useState([]);
+  const [codes, setCodes] = useState({
+    accounts: [],
+  });
+  const [benefits, setBenefits] = useState({
+    accounts: [],
+  });
 
   const fetchData = async () => {
     await Promise.allSettled([fetchCodes(), fetchBenefits()]);
@@ -77,50 +98,49 @@ function ApiProvider({ children }: ApiProviderProps) {
 export default ApiProvider;
 
 export const useBenefits = (tagName: string = "", limit: number = 4) => {
-  const { state } = useContext(ApiContext) as any;
+  const { state } = useContext(ApiContext);
 
-  if (state.benefits.length === 0) return state.benefits;
+  if (state.benefits.accounts.length === 0) return state.benefits.accounts;
 
-  console.warn("HAY DATA", state.benefits);
-  return state?.benefits?.accounts
-    .filter((item: any) => item.tags[0]?.name === tagName)
+  const benefits = state?.benefits?.accounts as Account[];
+
+  return benefits
+    .filter((item) => item.tags[0]?.name === tagName)
     .slice(0, limit)
-    .map((acc: any) => {
+    .map((acc) => {
       return {
         ...acc,
-        branches: acc.branches.sort(
-          (a: any, b: any) => a.location - b.location
-        ),
+        branches: acc.branches.sort((a, b) => a.location - b.location),
       };
     })
-    .sort((a: any, b: any) => a.branches[0].location - b.branches[0].location)
-    .map((item: any) => {
+    .sort((a, b) => a.branches[0].location - b.branches[0].location)
+    .map((item) => {
       return {
         name: item.name,
         image: item.images[0].url,
         crmid: item.crmid,
-        benefits: item.benefits.sort((a: any, b: any) =>
-          a.type > b.type ? -1 : 1
-        ),
+        benefits: item.benefits.sort((a, b) => (a.type > b.type ? -1 : 1)),
         nearLocation: item.branches[0].location,
       };
     });
 };
 
 export const useCodes = (): any => {
-  const { state } = useContext(ApiContext) as any;
+  const { state } = useContext(ApiContext);
 
-  if (state.codes.length === 0) return state.codes;
+  if (state.codes.accounts.length === 0) return state.codes.accounts;
 
-  return state?.codes?.accounts
-    .filter((item: any) => item.haveVoucher === true)
+  const codes = state?.codes?.accounts as Account[];
+
+  return codes
+    .filter((item) => item.haveVoucher === true)
     .slice(0, 4)
-    .map((item: any) => {
+    .map((item) => {
       return {
         name: item.name,
         image: item.images[0].url,
         crmid: item.crmid,
       };
     })
-    .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+    .sort((a, b) => (a.name > b.name ? 1 : -1));
 };
