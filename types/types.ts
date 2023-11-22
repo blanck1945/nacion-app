@@ -118,3 +118,30 @@ export type Account = {
   virtualCard: boolean;
   socialNetworks: AccountSocialNetworks;
 };
+
+export type ApiCodes = {
+  name: string;
+  image: string;
+  crmid: string;
+};
+
+export type ApiBenefits = {
+  name: string;
+  image: string;
+  crmid: string;
+  benefits: AccountBenefit[];
+  nearLocation: number;
+};
+
+export type CardData = Partial<ApiBenefits> & {
+  name: string;
+  image: string;
+  crmid: string;
+};
+
+export const cardTypes = {
+  codes: "codes",
+  benefits: "benefits",
+} as const;
+
+export type CardTypes = (typeof cardTypes)[keyof typeof cardTypes];

@@ -14,7 +14,7 @@ const CardTypeHandler: FC<CardBodyProps> = ({ cardInfo, cardType }) => {
     case "codes":
       return <Codes cardInfo={cardInfo} />;
     default:
-      return <Benefits cardInfo={cardInfo} />;
+      return <Benefits cardInfo={cardInfo} cardType={cardType} />;
   }
 };
 

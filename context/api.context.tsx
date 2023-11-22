@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Account } from "@/types/types";
+import { Account, ApiBenefits, ApiCodes } from "@/types/types";
 
 interface ApiProviderProps {
   children: ReactNode;
@@ -14,10 +14,10 @@ interface ApiProviderProps {
 export type ApiContextType = {
   state: {
     codes: {
-      accounts: [] | Account[];
+      accounts: [] | ApiCodes[];
     };
     benefits: {
-      accounts: [] | Account[];
+      accounts: [] | ApiBenefits[];
     };
   };
   hooks: {};
@@ -125,7 +125,7 @@ export const useBenefits = (tagName: string = "", limit: number = 4) => {
     });
 };
 
-export const useCodes = (): any => {
+export const useCodes = () => {
   const { state } = useContext(ApiContext);
 
   if (state.codes.accounts.length === 0) return state.codes.accounts;

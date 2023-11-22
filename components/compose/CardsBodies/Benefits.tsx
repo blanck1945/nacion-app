@@ -2,9 +2,11 @@ import React, { FC } from "react";
 import CardBody from "../../atoms/Card/CardBody";
 import CardHeader from "../../atoms/Card/CardHeader";
 import { IoLocationOutline } from "react-icons/io5";
+import Link from "next/link";
 
 interface BenfitsProps<T> {
   cardInfo: T;
+  cardType: string;
 }
 
 const benefitsStyles: { [T: number]: string } = {
@@ -20,7 +22,7 @@ const Benefits: FC<
     benefits: any[];
     nearLocation: number;
   }>
-> = ({ cardInfo }) => {
+> = ({ cardInfo, cardType }) => {
   const convertToKm = (distanceInMtr: number) => {
     const distance = distanceInMtr / 1000.0;
 
@@ -31,9 +33,20 @@ const Benefits: FC<
 
   return (
     <CardBody className="h-24 sm:h-auto">
-      <CardHeader className="text-left md:h-6 md:mt-2 text-black text-opacity-70 font-semibold text-sm md:text-xl overflow-hidden text-ellipsis ">
-        {cardInfo?.name}
-      </CardHeader>
+      {cardType === "benefits" ? (
+        <Link
+          target="_blank"
+          href={`https://club.lanacion.com.ar/${cardInfo?.crmid}`}
+        >
+          <CardHeader className="text-left md:h-6 md:mt-2 text-black text-opacity-70 font-semibold text-sm md:text-xl overflow-hidden text-ellipsis ">
+            {cardInfo?.name}
+          </CardHeader>
+        </Link>
+      ) : (
+        <CardHeader className="text-left md:h-6 md:mt-2 text-black text-opacity-70 font-semibold text-sm md:text-xl overflow-hidden text-ellipsis ">
+          {cardInfo?.name}
+        </CardHeader>
+      )}
       <div className="flex">
         {cardInfo?.benefits?.map((el, index) => {
           return (

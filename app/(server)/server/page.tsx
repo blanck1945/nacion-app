@@ -1,10 +1,11 @@
 import CardSection from "@/components/compose/CardSection";
 import { getBenefits, getCodes } from "./fetch";
 import Banner from "@/components/compose/Banner";
+import { CardData } from "@/types/types";
 
 export default async function Home() {
-  const codes = await getCodes();
-  const benefits = await getBenefits();
+  const codes: CardData[] = await getCodes();
+  const benefits: CardData[] = await getBenefits();
 
   return (
     <main>
